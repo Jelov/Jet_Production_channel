@@ -53,7 +53,7 @@ void production_channel_plot(){
   double dphiLo=0;
 	double dphiHi=3.2;
 
-	TH1I *production_channel =  new TH1I("production_channel","jets production channel",12,0,12);
+	TH1I *production_channel =  new TH1I("production_channel","jets production channel",16,0,16);
 
   TH1D *channel_0_pt   = new TH1D("channel_0_pt"  ,"channel_0_pt",ptBins,ptLo,ptHi);           // channel_0_pt->Sumw2();
   TH1D *channel_0_dphi = new TH1D("channel_0_dphi","channel_0_dphi",dphiBins,dphiLo,dphiHi);	 // channel_0_dphi->Sumw2();

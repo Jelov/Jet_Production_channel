@@ -1220,6 +1220,13 @@ HiInclusiveJetAnalyzer::analyze(const Event& iEvent,
 					int MotherGluon33_tag=0;  // gluon splitting type 2 , from subhardest process.
 					int MotherGluon41n43_tag=0; // another initial shower-----initial shower type 3, shoud not exit!
 
+					int Quark41_tag=0; // initail state radiation but dauguter participate the hard process
+					int Quark43_tag=0; // pure initial state radiation 
+					
+					int MotherAllOthers23_tag=0; // if Mothergluon is none of above status, trace its mother particle, 23 and 33 gluon splitting.
+					int MotherAllOthers33_tag=0; //
+					int MotherAllOthers41n43_tag=0; // 4143 as initial state radiation
+					int MotherBeamParticleProton_tag=0;
 
 					myfile<<"Hello, start to trace history, Gen_q_index = "<< Gen_q_index<<" , jet index : j = "<<j<<endl;
 					myfile<<"jet ID = "<< (*genParticles)[Gen_q_index].pdgId()<<endl;
@@ -1260,6 +1267,8 @@ HiInclusiveJetAnalyzer::analyze(const Event& iEvent,
 							if( GenMomCandidate->status() ==23){ Quark23_tag++; } // if Quark21_tag=0, Quark23!=0, gg->bb/cc or qq->bb/c
 							if( GenMomCandidate->status() ==31){ Quark31_tag++; } // flavor excitation 2nd type
 							if( GenMomCandidate->status() ==33){ Quark33_tag++; } // if Quark21_tag=0, Quark33!=0, gg->bb/cc or qq->bb/c
+							if( GenMomCandidate->status() ==41){ Quark41_tag++; } // if >1 ,initail state radiation- flavor excitaion like
+							if( GenMomCandidate->status() ==43){ Quark43_tag++; } // if >1 and 41tag=0, pure initail state radiation.
 
 
 							myfile<<" GenMomCandidate->numberOfMothers() = " << GenMomCandidate->numberOfMothers()<<endl;	
@@ -1292,9 +1301,10 @@ HiInclusiveJetAnalyzer::analyze(const Event& iEvent,
 									int mother_ID = GenMomCandidate->mother(i_mother)->pdgId();
 									int mother_status = GenMomCandidate->mother(i_mother)->status();
 									if ( mother_ID == 21 && mother_status == 21){DMotherGluon21_tag++; }
-									else if ( (abs(mother_ID) == 1 || abs(mother_ID) == 2 || abs(mother_ID) == 3) && mother_status ==21 ){DMotherQuark21_tag++; }
+                  else if ( (abs(mother_ID) == 1 || abs(mother_ID) == 2 || abs(mother_ID) == 3 || abs(mother_ID) == 4 || abs(mother_ID) == 5) && mother_status ==21 && mother_ID != GenMomCandidate->pdgId() ){DMotherQuark21_tag++; } // qq->q'q', q!=q'
 									else if ( mother_ID == 21 && mother_status == 31){DMotherGluon31_tag++; }
-									else if ( (abs(mother_ID) == 1 || abs(mother_ID) == 2 || abs(mother_ID) == 3) && mother_status ==31 ){DMotherQuark31_tag++; }
+                  else if ( (abs(mother_ID) == 1 || abs(mother_ID) == 2 || abs(mother_ID) == 3 || abs(mother_ID) == 4 || abs(mother_ID) == 5) && mother_status ==31 && mother_ID != GenMomCandidate->pdgId() ){DMotherQuark31_tag++; }
+
 
 									else if ( mother_ID == 21 && mother_status == 41){DMotherGluon41_tag++; }
 									else if ( mother_ID == 21 && mother_status == 43){DMotherGluon43_tag++; }
@@ -1337,8 +1347,8 @@ HiInclusiveJetAnalyzer::analyze(const Event& iEvent,
 							} 
 						} // end while ( GenMomCandidate->numberOfMothers() >=1 )
 
-
-						while (Quark21_tag==0 && Quark23_tag==0 && Quark31_tag==0 && Quark33_tag==0 && DMotherGluon21_tag==0 && DMotherQuark21_tag==0&& DMotherGluon31_tag==0 && DMotherQuark31_tag==0  && DMotherGluon41_tag==0 && DMotherGluon43_tag==0 && MotherGluon23_tag==0 && MotherGluon33_tag==0 && MotherGluon41n43_tag ==0 && GenMomCandidate->numberOfMothers()>=1){
+						int traceFurther=0;
+						while (Quark21_tag==0 && Quark23_tag==0 && Quark31_tag==0 && Quark33_tag==0 && Quark41_tag == 0 && DMotherGluon21_tag==0 && DMotherQuark21_tag==0&& DMotherGluon31_tag==0 && DMotherQuark31_tag==0  && DMotherGluon41_tag==0 && DMotherGluon43_tag==0 && MotherGluon23_tag==0 && MotherGluon33_tag==0 && MotherGluon41n43_tag ==0 && GenMomCandidate->numberOfMothers()>=1){
 							mother_layer++;
 							int n_mother = GenMomCandidate->numberOfMothers();
 							int motherisgluon=0;
@@ -1350,18 +1360,63 @@ HiInclusiveJetAnalyzer::analyze(const Event& iEvent,
 								int mother_status = GenMomCandidate->mother(i_mother)->status();
                 myfile<<"mother "<<i_mother<<" 's ID = "<< mother_ID<<", status = "<<mother_status<<endl;
 
-								if ( mother_ID == 21 && mother_status == 23){ MotherGluon23_tag++; }
-								else if (  mother_ID == 21 && mother_status == 33){ MotherGluon33_tag++; }
-								else if ( mother_ID == 21 && ( mother_status == 41 || mother_status == 43) ){ MotherGluon41n43_tag++; }
+								if ( mother_ID == 21 && mother_status == 23){ MotherGluon23_tag++; break;}
+								else if (  mother_ID == 21 && mother_status == 33){ MotherGluon33_tag++; break;}
+								else if ( mother_ID == 21 && ( mother_status == 41 || mother_status == 43) ){ MotherGluon41n43_tag++; break;}
 								if ( mother_ID ==21) {
 									GenMomCandidate = GenMomCandidate->mother(i_mother);
 									motherisgluon++;
+									break;
 								}
 							}
-							if (motherisgluon==0){myfile<<"quark mother is not quark and not gluon handle this case"<<endl; break;}	
-							if (GenMomCandidate->pdgId()==2212){myfile<<"reach origin"<<endl; break;}
+							if (motherisgluon==0){ // for Mothergluon != 23,33,41n43
+								traceFurther=1;
+								myfile<<"quark mother is not quark and not gluon ,handle this case"<<endl; 
+								break;}	
 							if (mother_layer>9999){myfile<<"can not trace to origin, some problems here"<<endl; break;}
-						}
+						} // end of while (Quark...) : mother gluon search
+
+	
+							int flavorchanged =0;
+							int numberOfMother_traceFurther=0;
+						while (traceFurther==1 && MotherAllOthers23_tag ==0 && MotherAllOthers33_tag==0 && MotherAllOthers41n43_tag==0 && GenMomCandidate->numberOfMothers()>=1 ){
+							myfile<<"inside the traceFurther while loop"<<endl;
+							int flavormatched=0;
+              int n_mother = GenMomCandidate->numberOfMothers();
+							mother_layer++;
+							if (n_mother>1){
+								myfile<<"n_mother >1 in traceFurther while loop, be careful!"<<endl;
+								numberOfMother_traceFurther++;
+							}
+              for (int i_mother =0; i_mother<n_mother; i_mother++){
+                int mother_ID = GenMomCandidate->mother(i_mother)->pdgId();
+                int mother_status = GenMomCandidate->mother(i_mother)->status();
+                myfile<<"mother "<<i_mother<<" 's ID = "<< mother_ID<<", status = "<<mother_status<<endl;				
+								if (GenMomCandidate->pdgId() == mother_ID){
+									flavormatched++;
+									GenMomCandidate = GenMomCandidate->mother(i_mother);
+									break;	
+								}
+							} // enf for( i_mother)
+							if (flavormatched==0){
+								flavorchanged++;
+								GenMomCandidate = GenMomCandidate->mother();
+                myfile<<"flavorchanged , new flavor is "<<GenMomCandidate->pdgId();
+							}
+						
+							if (GenMomCandidate->status()== 23) {MotherAllOthers23_tag++;} // the following should auto exit the while
+              if (GenMomCandidate->status()== 33) {MotherAllOthers33_tag++;}
+              if (GenMomCandidate->status()== 41 || GenMomCandidate->status()== 43 ) {MotherAllOthers41n43_tag++;}
+							if (GenMomCandidate->pdgId()==2212){
+								MotherBeamParticleProton_tag++;
+								myfile<<"reach origin"<<endl; 							
+								break;
+								}					
+              if (mother_layer>9999){myfile<<"can not trace to origin, some problems here"<<endl; break;}
+
+						} // end of while traceFurther
+						if(flavorchanged >=1){myfile<<"flavor changed times = "<<flavorchanged<<endl;}
+						if(numberOfMother_traceFurther >=1){myfile<<"numberOfMother in traceFurther = "<<numberOfMother_traceFurther<<endl;}
 
 						myfile<<"mother layer = "<< mother_layer<<" ,status = "<<GenMomCandidate->status()<<", pdgId = "<< GenMomCandidate->pdgId()<<endl;
 
@@ -1374,23 +1429,30 @@ HiInclusiveJetAnalyzer::analyze(const Event& iEvent,
 					myfile<<"####  Quark21_tag = " <<Quark21_tag<<" ,Quark23_tag = "<<Quark23_tag<<" ,DMotherGluon21_tag = "<<DMotherGluon21_tag<<" ,DMotherQuark21_tag = "<<DMotherQuark21_tag<<endl;
 					myfile<<"#### Quark31_tag = " <<Quark31_tag<<" ,Quark33_tag = "<<Quark33_tag<<" ,DMotherGluon31_tag = "<<DMotherGluon31_tag<<" ,DMotherQuark31_tag = "<<DMotherQuark31_tag<<endl;
 					myfile<<"####  DMotherGluon41_tag = "<<DMotherGluon41_tag<<" ,DMotherGluon43_tag = "<<DMotherGluon43_tag<<" ,MotherGluon23_tag ="<<MotherGluon23_tag<<" ,MotherGluon33_tag ="<<MotherGluon33_tag<<" ,MotherGluon41_tag = "<<MotherGluon41n43_tag<<endl;
-
+					myfile<<"####  MotherAllOthers23_tag = "<<MotherAllOthers23_tag<<" ,MotherAllOthers33_tag = "<< MotherAllOthers33_tag<<" ,MotherAllOthers41n43_tag = "<<MotherAllOthers41n43_tag<<" , MotherBeamParticleProton_tag = "<< MotherBeamParticleProton_tag<<endl;
 					// determine the jetproduction_channel
 					int jetProduction_channel = 0; // not matched for flavor :-1  ; not found channel :0 
-					if(Quark21_tag==1){jetProduction_channel=1;} // flavor excitation
-					if(Quark31_tag==1){jetProduction_channel=2;} // flavor excitation
+          if (Quark21_tag==0 && Quark23_tag==1 && DMotherGluon21_tag ==2){jetProduction_channel=1;} // gluon-gluon fusion
+          if (Quark21_tag==0 && Quark23_tag==1 && DMotherQuark21_tag ==2){jetProduction_channel=2;} // quark-quark annihilation 
+          if (Quark31_tag==0 && Quark33_tag==1 && DMotherGluon31_tag ==2){jetProduction_channel=3;} // gluon-gluon fusion
+          if (Quark31_tag==0 && Quark33_tag==1 && DMotherQuark31_tag ==2){jetProduction_channel=4;} // quark-quark annihilation 
 
-					if (Quark21_tag==0 && Quark23_tag==1 && DMotherGluon21_tag ==2){jetProduction_channel=3;} // gluon-gluon fusion
-					if (Quark21_tag==0 && Quark23_tag==1 && DMotherQuark21_tag ==2){jetProduction_channel=4;} // quark-quark annihilation 
-					if (Quark31_tag==0 && Quark33_tag==1 && DMotherGluon31_tag ==2){jetProduction_channel=5;} // gluon-gluon fusion
-					if (Quark31_tag==0 && Quark33_tag==1 && DMotherQuark31_tag ==2){jetProduction_channel=6;} // quark-quark annihilation 
+					if(Quark21_tag==1){jetProduction_channel=5;} // flavor excitation
+					if(Quark31_tag==1){jetProduction_channel=6;} // flavor excitation
 
-					if (Quark21_tag==0 && Quark23_tag==0 && DMotherGluon41_tag ==1){jetProduction_channel=7;} // initial state shower or flavor excitation
-					if (Quark21_tag==0 && Quark23_tag==0 && DMotherGluon43_tag ==1){jetProduction_channel=8;} // pure initial state shower
-          if (Quark21_tag==0 && Quark23_tag==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon41n43_tag==1){jetProduction_channel=9;} // initial state shower type 2 (should very similar to 8)
+					// initial state radiation
+					if (Quark21_tag==0 && Quark23_tag==0 && Quark41_tag >=1){jetProduction_channel=7;} // this might look like flavor excitation
+					if (Quark21_tag==0 && Quark23_tag==0 && Quark41_tag ==0 && (Quark43_tag >=1 || DMotherGluon43_tag ==1)){jetProduction_channel=8;} 
+          if (Quark21_tag==0 && Quark23_tag==0 && Quark41_tag ==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon41n43_tag==1){jetProduction_channel=9;} // initial state shower type 2 (should very similar to 8)
+          if (Quark21_tag==0 && Quark23_tag==0 && Quark41_tag ==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon41n43_tag==0 && MotherAllOthers41n43_tag==1){jetProduction_channel=10;} // initial state shower type 2 (should very similar to 8
+					if (Quark21_tag==0 && Quark23_tag==0 && Quark41_tag ==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon41n43_tag==0 && MotherAllOthers41n43_tag==0 && MotherBeamParticleProton_tag>=1) {jetProduction_channel=11;} // directly from p
 
-					if (Quark21_tag==0 && Quark23_tag==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon23_tag==1){jetProduction_channel=10;} // gluon splitting
-					if (Quark21_tag==0 && Quark23_tag==0 && Quark31_tag==0 && Quark33_tag==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon33_tag==1){jetProduction_channel=11;} // gluon splitting type 2
+					// gluon splitting ( after hard process)					
+					if (Quark21_tag==0 && Quark23_tag==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon23_tag==1){jetProduction_channel=12;} // gluon splitting type 1
+					if (Quark21_tag==0 && Quark23_tag==0 && Quark31_tag==0 && Quark33_tag==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon33_tag==1){jetProduction_channel=13;} // gluon splitting type 2
+					if (Quark21_tag==0 && Quark23_tag==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon23_tag==0 && MotherAllOthers23_tag ==1 ){jetProduction_channel=14;} // gluon splitting type 3, gluon not produced in hardprocess
+          if (Quark21_tag==0 && Quark23_tag==0 && DMotherGluon41_tag ==0 && DMotherGluon43_tag==0 && MotherGluon23_tag==0 && MotherAllOthers33_tag ==1 ){jetProduction_channel=15;} // gluon splitting type 4, gluon not pruduced in hardprocess
+
 
           if (jetProduction_channel == 0){ myfile<<"####  production_channel =0, check this #####"<<endl;}
 					myfile<<"jet Production channel tag  = "<< jetProduction_channel<<"\n\n"<<endl;
