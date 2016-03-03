@@ -77,7 +77,8 @@ private:
   double getEt(math::XYZPoint pos, double energy);
   math::XYZPoint getPosition(const DetId &id, reco::Vertex::Point vtx = reco::Vertex::Point(0,0,0));
   int TaggedJet(reco::Jet calojet, edm::Handle<reco::JetTagCollection > jetTags );
-
+	
+	int returnHFJetProdType(const reco::Jet & jet, const int jetPartonFlavor, const reco::GenParticleCollection * genParticles) ;
   // edm::InputTag   jetTag_, vtxTag_, genjetTag_, eventInfoTag_, L1gtReadout_, pfCandidateLabel_, trackTag_, matchTag_;
   edm::InputTag   jetTagLabel_;
   edm::EDGetTokenT<std::vector<reco::Vertex> >         vtxTag_;

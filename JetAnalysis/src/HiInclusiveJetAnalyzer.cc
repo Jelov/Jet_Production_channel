@@ -1155,6 +1155,15 @@ HiInclusiveJetAnalyzer::analyze(const Event& iEvent,
 			jets_.ref_qMom_phi[jets_.nref]=-999;
 
 
+			if( abs( (*patjets)[j].partonFlavour() )==4 || abs( (*patjets)[j].partonFlavour() )==5 ){
+			myfile<<"inside the calling if"<<endl;
+      Handle<reco::GenParticleCollection> genParticles;
+      iEvent.getByToken(genParticleSrc_, genParticles);
+			const GenParticleCollection * genParticleColl = &(*genParticles);
+			int returnprodutype =	returnHFJetProdType(jet, (*patjets)[j].partonFlavour() , genParticleColl);
+			myfile<<"end of calling if, return value is "<< returnprodutype<< endl;
+			}
+
 			myfile<<" iEvent.id().event() = "<<iEvent.id().event()<<" , jet index : j = "<<j<<"  , jets_.nref= "<<jets_.nref <<endl;
 			if( abs( (*patjets)[j].partonFlavour() )==4 || abs( (*patjets)[j].partonFlavour() )==5 ){
 
@@ -1794,6 +1803,36 @@ int HiInclusiveJetAnalyzer::TaggedJet(Jet calojet, Handle<JetTagCollection > jet
 		}
 	}
 	return result;
+}
+
+int HiInclusiveJetAnalyzer::returnHFJetProdType(const reco::Jet & jet, const int jetPartonFlavor, const reco::GenParticleCollection * genParticleColl) { 
+// send in when partonFlavour ==4 || ==5
+// need (*jets) , (*genParticles)[i] collection 
+  char filename[]="returnHFJetProduType.txt";
+  fstream myfile1;
+  myfile1.open (filename,ios::out|ios::app);
+
+	myfile1<<"inside the returnHFJetProdType function"<<endl;
+	myfile1<<"reco::Jet & jet, jet pt = "<<jet.pt()<<endl;
+	myfile1<<"jetPartonFlavor = "<< jetPartonFlavor<<endl;
+
+//	Handle<reco::GenParticleCollection> genParticles;
+//  iEvent.getByToken(genParticleSrc_, genParticles);
+
+//  for(unsigned icand=0;icand<pfCandidateColl->size(); icand++) {
+//    const reco::PFCandidate pfCandidate = pfCandidateColl->at(icand);}
+
+	for(unsigned icand=0; icand < genParticleColl->size() ;icand++){
+		const reco::GenParticle genCand = genParticleColl->at(icand);
+	  if (genCand.pdgId()== jetPartonFlavor){
+		myfile1<<"genCand.pdgId()== jetPartonFlavor = "<<genCand.pdgId()<<", icand = "<<icand<<endl;
+		}
+	}
+//	myfile1<<"(*genParticles)[0].eta() = "<<(*genParticles)[0].eta()<<endl;
+
+
+	return 1;
+
 }
 
 

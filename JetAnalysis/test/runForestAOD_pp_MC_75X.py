@@ -4,7 +4,7 @@
 # Input: AOD
 
 import FWCore.ParameterSet.Config as cms
-import FWCore.Utilities.FileUtils as FileUtils
+#import FWCore.Utilities.FileUtils as FileUtils
 process = cms.Process('HiForest')
 process.options = cms.untracked.PSet()
 
@@ -24,7 +24,7 @@ process.HiForest.HiForestVersion = cms.string(version)
 # Input source
 #####################################################################################
 
-mylist = FileUtils.loadListFromFile ('test_fileList.txt')
+#mylist = FileUtils.loadListFromFile ('test_fileList.txt')
 
 process.source = cms.Source("PoolSource",
                             duplicateCheckMode = cms.untracked.string("noDuplicateCheck"),
@@ -40,7 +40,7 @@ process.source = cms.Source("PoolSource",
 
 
                             ),
-                             skipEvents = cms.untracked.uint32(39)
+                             skipEvents = cms.untracked.uint32(30)
 
 )
 
@@ -106,6 +106,7 @@ process.hiEvtAnalyzer.doHiMC = cms.bool(False) #HI specific MC info
 process.load('HeavyIonsAnalysis.JetAnalysis.HiGenAnalyzer_cfi')
 process.HiGenParticleAna.genParticleSrc = cms.untracked.InputTag("genParticles")
 process.HiGenParticleAna.doHI = False
+process.HiGenParticleAna.
 process.load('HeavyIonsAnalysis.EventAnalysis.runanalyzer_cff')
 process.load("HeavyIonsAnalysis.JetAnalysis.pfcandAnalyzer_pp_cfi")
 process.pfcandAnalyzer.skipCharged = False
