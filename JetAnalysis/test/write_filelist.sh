@@ -1,10 +1,10 @@
 #! /bin/bash
 
-for ievent in {41..100}
+for ievent in {1..30}
 do
 
-cat <<EOF >> test_fileList_41.txt
-root://xrootd.unl.edu//store/user/mnguyen/bJet/Pythia8_bjet30_5020GeV_GEN-SIM/Pythia8_bjet30_5020GeV_RECO_75X_mcRun2_asymptotic_ppAt5TeV_v3/151215_143130/0000/step3_$ievent.root
+cat <<EOF >> fileList_pythia6_pt50_evtgen.txt
+root://xrootd.unl.edu//store/user/chengchi/bJetPythia6_pthat50_EvtGen_TuneZ2_5020GeV/MC_bJet50_HLT_RECO_Pythia6/160224_214810/0000/ppReco_RAW2DIGI_L1Reco_RECO_Pythia6_$ievent.root
 
 EOF
 done

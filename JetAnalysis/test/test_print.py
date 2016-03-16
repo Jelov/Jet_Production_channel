@@ -13,7 +13,7 @@ process.source = cms.Source("PoolSource",
 #"root://cms-xrd-global.cern.ch//store/user/mnguyen//forestMC75X/bJetPythia6_pthat50_EvtGen_TuneZ2_5020GeV/forest_bjet50_Pythia6_evtgen_758p3_hfProdCode/160303_083103/0000/merged_HiForestAOD.root",
 "file:/mnt/hadoop/store/user/chengchi/bJetPythia6_pthat50_EvtGen_TuneZ2_5020GeV/MC_bJet50_HLT_RECO_Pythia6/160224_214810/0000/ppReco_RAW2DIGI_L1Reco_RECO_Pythia6_1.root",
                             ),
-                             skipEvents = cms.untracked.uint32(37)
+                             skipEvents = cms.untracked.uint32(50)
 
 
 	)

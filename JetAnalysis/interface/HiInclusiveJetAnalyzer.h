@@ -77,8 +77,12 @@ private:
   double getEt(math::XYZPoint pos, double energy);
   math::XYZPoint getPosition(const DetId &id, reco::Vertex::Point vtx = reco::Vertex::Point(0,0,0));
   int TaggedJet(reco::Jet calojet, edm::Handle<reco::JetTagCollection > jetTags );
+
+  int returnHFJetProdType(const reco::Jet & jet, const int jetPartonFlavor, const reco::GenParticleCollection * genParticles) ;
+
+	int checkDauChare(const reco::GenParticle &gen);
+  int checkDauChare(const reco::Candidate &gen);
 	
-	int returnHFJetProdType(const reco::Jet & jet, const int jetPartonFlavor, const reco::GenParticleCollection * genParticles) ;
   // edm::InputTag   jetTag_, vtxTag_, genjetTag_, eventInfoTag_, L1gtReadout_, pfCandidateLabel_, trackTag_, matchTag_;
   edm::InputTag   jetTagLabel_;
   edm::EDGetTokenT<std::vector<reco::Vertex> >         vtxTag_;
@@ -135,6 +139,16 @@ private:
   TTree *t;
 	TH1F  *h_qJet_dR_all;
   TH1F  *h_qJet_dR_flavormatched;
+	TH1I  *h_B0_decay;
+	TH1I  *h_B0bar_decay;
+  TH1I  *h_Bp_decay;
+  TH1I  *h_Bs_decay;
+	
+  TH1I  *h_B0_chargeDaughters;
+  TH1I  *h_Bpm_chargeDaughters;
+  TH1I  *h_Bs_chargeDaughters;                                              
+  TH1I  *h_Bmesons_chargeDaughters;
+
 
   edm::Service<TFileService> fs1;
 

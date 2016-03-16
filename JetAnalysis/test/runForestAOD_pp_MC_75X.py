@@ -33,20 +33,22 @@ process.source = cms.Source("PoolSource",
 #"file:/home/peng43/scratch/MC_generation/CMSSW_7_5_8/src/step3_DIGI_L1_DIGI2RAW_HLT_RAW2DIGI_L1Reco_RECO.root",
 #"file:/home/peng43/scratch/MC_generation/CMSSW_7_5_8/src/step3_DIGI_L1_DIGI2RAW_HLT_RAW2DIGI_L1Reco_RECO.root",  # evtgen pythia8 
 #                                "root://xrootd.unl.edu//store/user/dgulhan/PYTHIA_QCD_TuneCUETP8M1_cfi_GEN_SIM_5020GeV/PYTHIA_QCD120_TuneCUETP8M1_cfi_RECODEBUGpp_757p1_timeslew_HcalRespCorrs_v4_00_mc/151215_074107/0000/step3_1.root",
-															" root://xrootd.unl.edu//store/user/mnguyen/bJet/Pythia8_bjet30_5020GeV_GEN-SIM/Pythia8_bjet30_5020GeV_RECO_75X_mcRun2_asymptotic_ppAt5TeV_v3/151215_143130/0000/step3_21.root", ## bjet30
+#															" root://xrootd.unl.edu//store/user/mnguyen/bJet/Pythia8_bjet30_5020GeV_GEN-SIM/Pythia8_bjet30_5020GeV_RECO_75X_mcRun2_asymptotic_ppAt5TeV_v3/151215_143130/0000/step3_21.root", ## bjet30
+#"file:/mnt/hadoop/store/user/chengchi/bJetPythia6_pthat50_EvtGen_TuneZ2_5020GeV/MC_bJet50_HLT_RECO_Pythia6/160224_214810/0000/ppReco_RAW2DIGI_L1Reco_RECO_Pythia6_1.root",  ## bjet50_pythi6_evtgen
+"root://xrootd.unl.edu//store/user/mnguyen/ppBjet/Pythia6_TuneZ2_5020GeV/Pythia6_bjet50_TuneZ2_5020GeV_RECO_v2/160205_172643/0000/step3_1.root", ## bjet50_pythi6 (by matt)
 #														"file:/home/peng43/scratch/Jet_FlavorID/CMSSW_7_5_8/src/HeavyIonsAnalysis/JetAnalysis/test/sample_input/PYTHIA_QCD120_TuneCUETP8M1_cfi_RECODEBUGpp_757p1_timeslew_HcalRespCorrs_v4_00_mc_pp/step3_1.root",
 #"file:/home/peng43/scratch/CMSSW_7_5_8/src/step3_DIGI_L1_DIGI2RAW_HLT_RAW2DIGI_L1Reco_RECO.root", #bjet200 hardbbbar on
 # "file:/home/peng43/scratch/Jet_FlavorID/CMSSW_7_5_8/src/HeavyIonsAnalysis/JetAnalysis/test/sample_input/pp_bjet_backup/step3_1.root", #bjet30 
 
 
                             ),
-                             skipEvents = cms.untracked.uint32(30)
+                             skipEvents = cms.untracked.uint32(0)
 
 )
 
 # Number of events we want to process, -1 = all events
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(30))
+    input = cms.untracked.int32(-1))
 
 
 #####################################################################################
@@ -73,7 +75,7 @@ process = overrideJEC_pp5020(process)
 #####################################################################################
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName=cms.string("HiForestAOD_pp_MC_bjets_2212.root"))
+                                   fileName=cms.string("HiForestAOD_pp_MC_bjets50.root"))
 
 #####################################################################################
 # Additional Reconstruction and Analysis: Main Body
@@ -106,7 +108,7 @@ process.hiEvtAnalyzer.doHiMC = cms.bool(False) #HI specific MC info
 process.load('HeavyIonsAnalysis.JetAnalysis.HiGenAnalyzer_cfi')
 process.HiGenParticleAna.genParticleSrc = cms.untracked.InputTag("genParticles")
 process.HiGenParticleAna.doHI = False
-process.HiGenParticleAna.
+process.HiGenParticleAna.stableOnly = cms.untracked.bool(False)
 process.load('HeavyIonsAnalysis.EventAnalysis.runanalyzer_cff')
 process.load("HeavyIonsAnalysis.JetAnalysis.pfcandAnalyzer_pp_cfi")
 process.pfcandAnalyzer.skipCharged = False
